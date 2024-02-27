@@ -125,9 +125,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static",
-# ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
@@ -166,4 +163,7 @@ if os.getenv('DEV') == 'true':
     print("django dev is true")
     from core.settings_dev import *
 print(ALLOWED_HOSTS)
-DEBUG=True
+DEBUG=False
+
+
+# 123@P@kistan@123
