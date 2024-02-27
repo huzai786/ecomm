@@ -24,8 +24,8 @@ def custom_context(request):
         watsapp_cart = watsapp.cart_text
         watsapp_call = watsapp.call_text
     else:
-        watsapp_cart = watsapp.cart_text
-        watsapp_call = watsapp.call_text
+        watsapp_cart = None
+        watsapp_call = None
 
     return {
         "watsapp_cart": watsapp_cart,
