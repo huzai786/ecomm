@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container box pb-3 w-50" style="background-color: white; box-shadow: 0px 0px 5px grey;">
+    <h1 class="text-center" style="font-size: 35px;">Profile</h1>
+    <div class="d-flex justify-content-end">
+        <a class="btn btn-dark" href="{% url 'edit_profile' %}" style="color: white; margin-top: 14px; ">Edit Profile</a>
+    </div>
+    {% if user_profile.first_name %}
+    <h3>First Name: </h3><p class="form-control">{{ user_profile.first_name }}</p>
+    {% else %}
+    <h3>First Name: </h3><p class="form-control">Not Set</p>
+    {% endif %}
+    {% if user_profile.last_name %}
+    <h3>First Name: </h3><p class="form-control">{{ user_profile.last_name }}</p>
+    {% else %}
+    <h3>Last Name: </h3><p class="form-control">Not Set</p>
+    {% endif %}
+    <h3>Email: </h3><p class="form-control">{{ user_profile.email }}</p>
+</div>
+<style>
+    .box {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    p {
+        margin: 5px;
+        
+    }
+    p:hover {
+        opacity: 0.9;
+        background-color: aliceblue;
+        
+    }
+
+</style>
+<script>
+</script>
+
+{% endblock content %}

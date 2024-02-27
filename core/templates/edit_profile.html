@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container box pb-3" style="background-color: white;">
+    
+    <h1 class="text-center" style="font-size: 35px;">Edit Profile</h1>
+    <div class="d-flex justify-content-end">
+        <a class="btn btn-dark" href="{% url 'profile' %}" style="color: white; margin-top: 14px; ">Back</a>
+    </div>
+    
+    <form action="{% url 'edit_profile' %}" method="post">
+        {% csrf_token %} 
+        <div class="form-group">
+            <h5>Email address</h5>
+            <input type="email" name="email" class="form-control" value="{{ user.email }}" aria-describedby="emailHelp" placeholder="Enter email">
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+            <h5>First Name</h5>
+            <input type="text" name="fname" class="form-control" value="{{ user.first_name }}">
+        </div>
+        <div class="form-group">
+            <h5>Last Name</h5>
+            <input type="text" name="lname" class="form-control" value="{{ user.last_name }}">
+        </div>
+
+        <div class="form-group">
+            <h5>Passwords</h5>
+            <div class="m-3">
+                <label for="oldpass">Old password</label>
+                <input type="password" class="form-control" id="oldpass" name="oldpass" placeholder="old password">
+                <label for="newpass1">New password</label>
+                <input type="password" class="form-control" id="newpass1" name="newpass1" placeholder="new password">
+                <label for="newpass2">re-type New password</label>
+                <input type="password" class="form-control" id="newpass2" name="newpass2" placeholder="retype new password">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-dark">Submit</button>
+    </form>
+</div>
+<style>
+    .box {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0px 0px 5px grey;
+    }
+    p {
+        margin: 5px;
+        
+    }
+    p:hover {
+        opacity: 0.9;
+        background-color: aliceblue;
+    }
+
+</style>
+{% endblock content %}

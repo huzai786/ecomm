@@ -1,0 +1,675 @@
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta content="width=device-width, initial-scale=1" name="viewport" />
+      <title>Nida Traders | Pink Salt & Onyx</title>
+      <script src="https://js.stripe.com/v3/"></script>
+
+      <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+      <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+      
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+      <link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
+      
+      <style>
+      .dropbtn {
+         background-color: #ffc446;
+         color: white;
+         font-size: 16px;
+         cursor: pointer;
+         border-radius: 20px;
+      }
+
+      .dropdown {
+           position: relative;
+           display: inline-block;
+      }
+
+      .dropdown-content {
+           display: none;
+           position: absolute;
+           background-color: #f9f9f9;
+           box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+           z-index: 99;
+      }
+
+      .dropdown-content a {
+           color: black;
+           padding: 6px;
+           text-decoration: none;
+           display: block;
+           border-radius: 20px;
+           font-size: 16px;
+           text-transform: lowercase;
+      }
+
+      .dropdown-content a:hover {background-color: #f1f1f1}
+
+      .dropdown:hover .dropdown-content {
+           display: block;
+      }
+
+      .dropdown:hover .dropbtn {
+           background-color: #ffe7c8;
+      }
+
+      .notification {
+           display: none;
+           position: fixed;
+           top: 5%;
+           left: 50%;
+           transform: translate(-50%, -50%);
+           padding: 20px;
+           background-color: '{{ message_color }}';
+           color: white;
+           border-radius: 10px;
+           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+           opacity: 0;
+           transition: opacity 0.5s;
+      }
+
+      .close-btn {
+         position: absolute;
+         top: 10px;
+         right: 10px;
+         font-size: 20px;
+         cursor: pointer;
+       }
+      .cart-item-count {
+         font-size: 17px;
+         position: absolute;
+         top: -17px;
+         left: 16px;
+         color: rgb(255, 255, 255);
+         border-radius: 50%;
+      }
+      #search-results {
+         position: absolute;
+         z-index: 1;
+         list-style-type: none;
+         margin: 0;
+         padding: 0;
+         width: 40%;
+         box-sizing: border-box;
+      }
+      #search-results > li {
+            cursor: pointer;
+            background-color: white;
+            font-size: 17px;
+            padding: 3px;
+      }
+      #search-results > li:hover {
+         background-color: rgb(218, 218, 218); 
+      }
+      .hidden {
+            opacity: 0;
+            pointer-events: none;
+      }
+      .alert_container {
+         position: fixed;
+         top: 0;
+         left: 50%;
+         transform: translateX(-50%);
+         text-align: center;
+         width: auto;
+         opacity: 0.9;
+         z-index: 1000;
+      }
+      .form-control:focus {
+         border-color: #fffaf0; 
+         box-shadow: 0 0 0 0.25rem rgba(247, 206, 131, 0.25);
+      }
+      
+      .header_section {
+         width: 100%;
+         display: flex;
+      }
+
+      .containt_main {
+         display: flex;
+      }
+      /* sidenav css starts */
+      .sidenav {
+         height: 100%;
+         width: 0;
+         position: fixed;
+         z-index: 1;
+         top: 0;
+         left: 0;
+         background-color: #111;
+         overflow-x: hidden;
+         transition: 0.5s;
+         padding-top: 30px;
+      }
+
+      .sidenav a {
+         padding: 8px 8px 8px 32px;
+         text-decoration: none;
+         font-size: 20px;
+         color: #ffffff;
+         display: block;
+         transition: 0.3s;
+      }
+
+      .sidenav a:hover {
+         color: #f26522;
+      }
+
+      .sidenav .closebtn {
+         position: absolute;
+         top: 0;
+         right: 25px;
+         font-size: 36px;
+         margin-left: 50px;
+      }
+
+      @media screen and (max-height: 450px) {
+         .sidenav {
+            padding-top: 15px;
+         }
+         .sidenav a {
+            font-size: 18px;
+         }
+      }
+      /* sidenav css ends */
+      .toggle_icon {
+         cursor: pointer;
+         color: #ffffff;
+         order: 2;
+      }
+
+      .header_box {
+         order: 2;
+         display: flex;
+      }
+      .main {
+         flex: 1;
+         display: inline-block;
+         order: 2;
+         margin-left: 20px;
+      }
+      /* login menu */
+      .login_menu {
+         display: flex;
+         text-align: right;
+         float: right;
+      }
+
+      .login_menu ul {
+         margin: 0px;
+         padding: 0px;
+      }
+
+      .login_menu li {
+         float: left;
+         font-size: 16px;
+         color: #000000;
+         text-transform: uppercase;
+         padding-top: 6px;
+         width: 60px;
+      }
+
+      .login_menu li a {
+         color: #000000;
+      }
+
+      /* footer section */
+      .myfooter {
+         color: white !important;
+      }
+      </style>
+      <style>
+         @media (max-width: 767px) {
+            .navbartohide {
+               display: none;
+            }
+         }
+         ul.navbar_design li a {
+         color: #f1f1f1; 
+         text-decoration: none;
+         position: relative;
+         }
+         ul.navbar_design li a:hover::after {
+         content: '';
+         position: absolute;
+         left: 0; 
+         bottom: -7px; 
+         width: 100%;
+         height: 2px; 
+         background-color: white;
+         }
+
+      .sticky {
+         position: fixed;
+         top: 0;
+         width: 100%;
+         z-index: 1000;
+      }
+
+      .hide {
+         display: none;
+      }
+      /* go to top */
+      #goToTopBtn {
+         display: none;
+         position: fixed;
+         bottom: 80px;
+         right: 20px;
+         z-index: 9999;
+         background-color: #f26522;
+         color: white;
+         border: none;
+         border-radius: 50%;
+         cursor: pointer;
+         padding: 15px;
+         font-size: 16px;
+      }
+
+      #goToTopBtn:hover {
+         background-color: #f0882b;
+      }
+
+      </style>
+      <style>
+      .navbar_design {
+         display: flex;
+         justify-content: center; 
+         align-items: center;
+         list-style: none;
+         padding: 7px;
+         position: relative;
+      }
+
+      .navbar_design li {
+         font-size: 16px;
+         color: #f1f1f1;
+         padding: 6px 10px 0px 10px;
+      }
+
+
+      .navbar_design li a {
+         color: #f1f1f1;
+      }
+
+      .navbar_design li a:hover {
+         color: #f26522;
+      }
+      .header_section_top {
+         width: 100%;
+         float: left;
+         background-color: #2b2a29;
+         height: auto;
+         padding: 10px 0px;
+         box-shadow: 0px 3px 6px gray;
+      }
+      /* navbar css ends */
+      </style>
+      <style>
+         .language-dropdown {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: #2b2a29;
+            color: white;
+            border-radius: 10px;
+            z-index: 999;
+            padding: 5px;
+         }
+         .language-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 120px;
+            box-shadow: 0 -8px 16px 0 rgba(0,0,0,0.2); 
+            z-index: 1;
+            bottom: 30px; 
+         }
+         .language-dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+         }
+         .language-dropdown-content a:hover {
+            background-color: #f1f1f1;
+         }
+         .language-dropdown:hover .language-dropdown-content {
+            display: block;
+         }
+      </style>
+   </head>
+
+   <body style="background: #f2f2f2;">
+
+      <script async src='https://d2mpatx37cqexb.cloudfront.net/delightchat-whatsapp-widget/embeds/embed.min.js'></script>
+      <script>
+        var wa_btnSetting = {"btnColor":"#16BE45","ctaText":"WhatsApp Us","cornerRadius":40,"marginBottom":20,"marginLeft":20,"marginRight":20,"btnPosition":"right","whatsAppNumber":"{{ watsapp_call }}","welcomeMessage":"Hello how can i help you?","zIndex":999999,"btnColorScheme":"light"};
+        window.onload = () => {
+          _waEmbed(wa_btnSetting);
+        };
+      </script>
+      <div class="language-dropdown">
+         <div class="language-dropdown-content">
+            <a href="/en/">English</a>
+            <a href="/fr/">French</a>
+         </div>
+         <span>Select Language</span>
+      </div> 
+
+
+      <button id="goToTopBtn" onclick="goToTop()" title="Go to top">Top</button>
+      <div>
+         <div id="first-div" class="d-flex justify-content-center align-items-center position-relative" style="height: 40px; background-color: black;">
+            <div class="slider-content justify-content-center">
+                <div class="row align-items-center">
+                    <div class="col-auto position-absolute" style="left: 150px;">
+                        <i class="fa fa-chevron-left" id="prev-bar" style="display: none; cursor: pointer;"></i>
+                    </div>
+                    <div class="col">
+                        <div id="slider-bar">
+                            {% if top_bar_items %}
+                                {% for top_bar_item in top_bar_items %}
+                                    <h5 class="text-center"><a style="text-decoration: none; color: white;">{{ top_bar_item.text }}</a></h5>
+                                {% endfor %}
+                            {% endif %} 
+                        </div>
+                    </div>
+                    <div class="col-auto position-absolute" style="right: 150px;">
+                        <i class="fa fa-chevron-right" id="next-bar" style="display: none; cursor: pointer;"></i>
+                    </div>
+                </div>
+            </div>
+         </div>
+         <div id="second-div">
+            <div class="header_section_top">
+               <ul class="navbar_design">
+                  <li><a href="{% url 'home' %}">Home</a></li>
+                  <li><a href="{% url 'all_products' %}">All products</a></li>
+                  {% if all_categories %}
+                     {% for cat in all_categories %}
+                     <li class="navbartohide"><a href="{% url 'products' cat.category_slug %}">{{ cat.category_name }}</a></li>
+                     {% endfor %}
+                  {% endif %}
+                  {% if request.user.is_superuser %}
+                     <li><a href="{% url 'orders' %}">Orders</a></li>
+                  {% else %}
+                     <li class="navbartohide"><a href="{% url 'about-us' %}">About us</a></li>
+                     <li class="navbartohide"><a href="{% url 'my_orders' %}">My Orders</a></li>
+                  {% endif %}
+                  <li style="position: absolute; right: 20px;">
+                     <a href="{% url 'cart' %}">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="cart-item-count">{{ cart_items_count }}</span>
+                     </a>
+                  </li>
+
+                  <li style="position: absolute; right: 60px;">
+                     {% if request.user.is_authenticated %}
+                     <a href="{% url 'profile' %}"><i class="fa-solid fa-user"></i></a>
+                     {% else %}
+                     <a href="{% url 'login' %}"><i class="fa-solid fa-user"></i></a>
+                     {% endif %}
+                  </li>
+               </ul>
+            </div>
+         </div>
+
+         <div class="header_section">
+            <div class="container mt-3">
+               <div class="containt_main">
+                  <div id="mySidenav" class="sidenav" style="z-index: 999;">
+                     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                     <a href="{% url 'home' %}">Home</a>
+                     <a href="{% url 'cart' %}">My Cart</a>
+                     <a href="{% url 'profile' %}">My Account</a>
+                     <a href="{% url 'all_products' %}">All Products</a>
+                     <a href="{% url 'my_orders' %}">My Orders</a>
+                     {% if request.user.is_authenticated %}
+                     <a href="{% url 'logout' %}">Logout</a>
+                     {% endif %}
+                  </div>
+                  <span class="toggle_icon" onclick="openNav()"><img src="{% static 'images/toggle-icon.png' %}"></span>
+                  <div id="category_dropdown" class="dropdown">
+                     <button style="background-color: #252525;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">All Category 
+                     </button>
+                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% for cat in all_categories %}
+                        <a class="dropdown-item" href="{% url 'products' cat.category_slug %}" style="margin: 0;">{{ cat.category_name }}</a>
+                        {% endfor %}
+                     </div>
+                  </div>
+                  <div class="main">
+                     <div class="input-group" style="width: 90%;">
+                        <input type="text" class="form-control" placeholder="Search products" id="search-input">
+                        <div class="input-group-append">
+                           <button class="btn btn-secondary" type="button" style="background-color: #f26522; border-color:#f26522 ">
+                           <i class="fa fa-search"></i>
+                           </button>
+                        </div>
+                     </div>
+                     <ul id="search-results"></ul>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div> 
+      <div class="alert_container">
+         {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+               {{ message }}
+               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+         {% endfor %}
+      </div>
+      {% block content %}{% endblock content %}
+
+      <div style="line-height: 30px;">
+         <div style="width: 100%; height: 60px; background-color:#000000; color: white;" class="d-flex align-items-center">
+            <i class="mx-auto" style="text-align: center;">
+            {% trans "Need Help? Contact us on Whatsapp +1 (612) 458-5827 or Email: almalikllc92@gmail.com" %}</i>   
+         </div>
+         <div class="myfooter">
+            <footer class="text-center text-lg-start text-white" style="background-color: #252525">
+              <div class="container p-4 pb-0">
+                  <section>
+                  <div class="row">
+                    <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                      <h3 class="text-uppercase mb-4" style="color: rgb(211, 211, 211); font-weight: bold;">Nida Tradings</h3>
+                      <p>At Nida tradings, we strive for excellence in everything we do. Our commitment to quality, innovation, and
+                        customer satisfaction sets us apart. Whether you're a first-time visitor or a loyal customer, we
+                        appreciate your support and trust in our brand."
+                      </p>
+                    </div>
+                    <hr class="w-100 clearfix d-md-none" />
+                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+                      <h3 class="text-uppercase mb-4 font-weight-bold" style="color: rgb(211, 211, 211); font-weight: bold;">Products</h3>
+                      {% for cat in all_categories %}
+                        <p><a href="{% url 'products' cat.category_slug %}" style="color: rgb(255, 255, 255);">{{ cat.category_name }}</a></p>
+                      {% endfor %}
+                    </div>
+                    <hr class="w-100 clearfix d-md-none"/>
+                    <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
+                      <h3 class="text-uppercase mb-4 font-weight-bold" style="color: rgb(211, 211, 211); font-weight: bold;"> Useful links</h3>
+                      <p><a href="{% url 'profile' %}" style="color: rgb(255, 255, 255);">Your Account</a></p>
+                      <p><a style="color: rgb(255, 255, 255);">Become an Affiliate</a></p>
+                      <p><a style="color: rgb(255, 255, 255);">Shipping Rates</a></p>
+                      <p><a href="{% url 'return_policy' %}" style="color: rgb(255, 255, 255);">Return Policy</a></p>
+                      <p><a style="color: rgb(255, 255, 255);" href="{% url 'contact-us' %}">Help</a></p>
+                    </div>
+                    <hr class="w-100 clearfix d-md-none" />
+                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                      <h3 class="text-uppercase mb-4 font-weight-bold" style="color: rgb(211, 211, 211); font-weight: bold;">Contact</h3>
+                      <p><i class="fas fa-envelope mr-3"></i> <a href="mailto:almalikllc92@gmail.com" style="color: rgb(255, 255, 255);">almalikllc92@gmail.com</a></p>
+                      <p><i class="fas fa-phone mr-3"></i> +1 (612) 458-5827</p>
+                      <p><i class="fas fa-print mr-3"></i> +1 (612) 458-5827</p>
+                    </div>
+                  </div>
+                  </section>
+                <hr class="my-3">
+                  <section class="p-3 pt-0">
+                  <div class="row d-flex align-items-center">
+                    <div class="col-md-7 col-lg-8 text-center text-md-start">
+                      <div class="p-3">© 2024 Copyright: <a class="text-white" href="">AL-Malik LLC</a>
+                      </div>
+                    </div>
+                    <div class="col-md-5 col-lg-4 ml-lg-0 text-center text-md-end">
+                      <a href="" class="btn btn-outline-light btn-floating m-1" class="text-white" role="button"><i class="fab fa-facebook-f"></i></a>
+                      <a class="btn btn-outline-light btn-floating m-1" class="text-white" role="button"><i class="fab fa-twitter"></i></a>
+                      <a href="https://www.pinterest.com/almalikllc92/" class="btn btn-outline-light btn-floating m-1" class="text-white" role="button"><i class="fa-brands fa-pinterest"></i></a>
+                      <a class="btn btn-outline-light btn-floating m-1" class="text-white" role="button" ><i class="fab fa-google"></i></a>
+                      <a href="https://www.instagram.com/almaliktradings/" class="btn btn-outline-light btn-floating m-1" class="text-white" role="button"><i class="fab fa-instagram"></i></a>
+                      <a href="https://www.tiktok.com/@almalickllc" class="btn btn-outline-light btn-floating m-1" class="text-white" role="button"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                  </div>
+                  </section>
+              </div>
+            </footer>
+          </div>
+      </div>
+   
+   <script> // go to top
+      window.onscroll = function() { scrollFunction() };
+
+      function scrollFunction() {
+         var goToTopBtn = document.getElementById("goToTopBtn");
+         if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            goToTopBtn.style.display = "block";
+         } else {
+            goToTopBtn.style.display = "none";
+         }
+      }
+      function goToTop() {
+         window.scrollTo({top: 0, behavior: 'smooth'});
+      }
+   </script>
+   <script>
+   window.addEventListener('scroll', function() {
+      var firstDiv = document.getElementById('first-div');
+      var secondDiv = document.getElementById('second-div');
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      var firstDivHeight = firstDiv.offsetHeight;
+
+      if (scrollTop > firstDivHeight) {
+         firstDiv.classList.add('hide');
+         secondDiv.classList.add('sticky');
+      } else {
+         firstDiv.classList.remove('hide');
+         secondDiv.classList.remove('sticky');
+      }
+   });
+   </script>
+   <script>
+      function setUtcOffset(offsetMinutes) {
+         fetch('{% url "set_timezone" %}', {
+               method: 'POST',
+               headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+               },
+               body: `utc_offset_minutes=${offsetMinutes}`,
+         })
+               .then(response => response.json())
+               .then(data => {
+                  if (data.success) {
+                     console.log('UTC offset set successfully');
+                  } else {
+                     console.error('Failed to set UTC offset:', data.error);
+                  }
+               })
+               .catch(error => {
+                  console.error('Error:', error);
+               });
+      }
+      const userUtcOffset = new Date().getTimezoneOffset();
+      setUtcOffset(userUtcOffset);
+
+      const searchInput = document.getElementById('search-input');
+      const searchResults = document.getElementById('search-results');
+      let timeoutId; 
+
+      searchInput.addEventListener('input', function() {
+      clearTimeout(timeoutId);
+      const inputValue = this.value.trim();
+      timeoutId = setTimeout(() => {
+         if (inputValue.length > 0) {
+               fetch(`/autocomplete/?query=${inputValue}`)
+                  .then(response => response.json())
+                  .then(data => {
+                     updateAutocompleteResults(data);
+                  })
+                  .catch(error => console.error('Error fetching autocomplete suggestions:', error));
+         } else {
+               updateAutocompleteResults([]);
+         }
+      }, 500);
+   });
+      function updateAutocompleteResults(results) {
+      searchResults.innerHTML = '';
+
+      // Append new results to the list
+      results.forEach(result => {
+         const listItem = document.createElement('li');
+         listItem.textContent = result.name;
+         listItem.addEventListener('click', function() {
+               window.location.href = result.url;
+         });
+         searchResults.appendChild(listItem);
+      });
+   }
+      
+      document.addEventListener("DOMContentLoaded", function() {
+            var alerts = document.querySelectorAll('.alert');
+            setTimeout(function() {
+               alerts.forEach(function(alert) {
+                     alert.classList.add('hidden');
+               });
+            }, 4000);
+         });
+      function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+         }
+      function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+         }
+   </script>
+   <script>
+         const slider = document.getElementById("slider-bar");
+         const prevBtn = document.getElementById("prev-bar");
+         const nextBtn = document.getElementById("next-bar");
+         const bar_slides = slider.children;
+         let currentIndex = 0;
+
+         function showSlide(index) {
+            for (let i = 0; i < bar_slides.length; i++) {
+               bar_slides[i].style.display = "none";
+            }
+            bar_slides[index].style.display = "block";
+         }
+
+         function nextSlide() {
+            currentIndex = (currentIndex + 1) % bar_slides.length;
+            showSlide(currentIndex);
+         }
+
+         function prevSlide() {
+            currentIndex = (currentIndex - 1 + bar_slides.length) % bar_slides.length;
+            showSlide(currentIndex);
+         }
+
+         function autoSlide() {
+            nextSlide();
+         }
+         nextBtn.addEventListener("click", nextSlide);
+         prevBtn.addEventListener("click", prevSlide);
+         setInterval(autoSlide, 4000);
+         showSlide(currentIndex);
+   </script>
+   <script>
+   </script>
+   <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+
+</html>

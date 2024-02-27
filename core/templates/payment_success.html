@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    /* Custom CSS for the successful payment page */
+    .payment-success-container {
+        background-color: #d4edda; /* Light green background color */
+        margin: 20px auto; /* Center the container horizontally with auto margin */
+        padding: 20px; /* Padding inside the container */
+        border-radius: 10px; /* Rounded corners for a softer look */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow for a subtle lift effect */
+    }
+
+    /* Additional styling for text and links */
+    .payment-success-text {
+        font-size: 1.5em;
+        color: #155724; /* Dark green text color */
+    }
+
+    .payment-success-links {
+        margin-top: 15px;
+    }
+
+    .payment-success-links a {
+        margin-right: 15px;
+        color: #0c5600; /* Darker green link color */
+    }
+</style>
+
+<div class="container mt-5" style="height: 600px;">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 text-center payment-success-container">
+            <h1 class="display-4 payment-success-text">Thank You!</h1>
+            <p class="lead payment-success-text">Your payment was successful. We appreciate your purchase!</p>
+            <p class="lead payment-success-text">If you haven't setup your account yet please change your password, it is same as your email!</p>
+
+            <div class="mt-4 payment-failed-links">
+                <a href="{% url 'home' %}" class="btn btn-dark">Go to Home</a>
+                <a href="{% url 'all_products' %}" class="btn btn-dark">View All Products</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

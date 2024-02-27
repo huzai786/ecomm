@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container container_ctus">
+   <div class="row justify-content-center">
+       <div class="col-md-7">
+           <h1 class="text-center mb-4 h1">Contact Us</h1>
+           <form>
+               <div class="form-group">
+                   <label for="name">Your Name</label>
+                   <input type="text" class="form-control" id="name" placeholder="Enter your name">
+               </div>
+               <div class="form-group">
+                   <label for="email">Your Email</label>
+                   <input type="email" class="form-control" id="email" placeholder="Enter your email">
+               </div>
+               <div class="form-group">
+                   <label for="message">Message</label>
+                   <textarea class="form-control" id="message" rows="4" placeholder="Enter your message"></textarea>
+               </div>
+               <button type="submit" class="btn btn-dark sbmt">Submit</button>
+           </form>
+       </div>
+   </div>
+</div>
+<style>
+       .container_ctus {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        .btn-dark.sbmt {
+            background-color: #343a40;
+            border-color: #343a40;
+        }
+
+        .btn-dark.sbmt:hover {
+            background-color: #23272b;
+            border-color: #23272b;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+        .sbmt {
+            width: 100%;
+        }
+</style>
+
+
+{% endblock content %}

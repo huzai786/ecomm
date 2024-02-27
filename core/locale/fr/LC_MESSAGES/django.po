@@ -1,0 +1,102 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-24 20:01+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+#: .\templates\base.html:473
+msgid ""
+"Need Help? Contact us on Whatsapp +1 (612) 458-5827 or Email: "
+"almalikllc92@gmail.com"
+msgstr "almalikllc92@gmail.com"
+
+#: .\templates\home.html:276
+msgid "Shop By Category"
+msgstr "Acheter par catégorie"
+
+#: .\templates\home.html:297
+msgid "Featured Items"
+msgstr "Articles en vedette"
+
+#: .\templates\home.html:298
+msgid "view our on sale and featured products."
+msgstr "consultez nos produits en vente et en vedette."
+
+#: .\templates\home.html:330
+msgid "Shop All"
+msgstr "Tout magasiner"
+
+#: .\templates\home.html:335
+msgid "Top Selling Products"
+msgstr "Produits les plus vendus"
+
+#: .\templates\home.html:374
+msgid "View Our Making"
+msgstr "Voir notre fabrication"
+
+#: .\templates\home.html:419
+msgid "Our Partners"
+msgstr "Nos partenaires"
+
+#: .\templates\home.html:437
+msgid "Customer Love"
+msgstr "Amour du client"
+
+#: .\templates\home.html:469
+msgid "Why Choose Us?"
+msgstr "Pourquoi nous choisir?"
+
+#: .\templates\home.html:476
+msgid ""
+"Each of these stunning onyx products are meticulously handcrafted by skilled "
+"artisans"
+msgstr "Chacun de ces superbes produits en onyx est méticuleusement fabriqué à la main par des experts artisans"
+
+#: .\templates\home.html:481
+msgid ""
+"Each gemstone tells a story of nature's artistry, capturing light and color "
+"in a mesmerizing beauty."
+msgstr "Chaque pierre précieuse raconte une histoire artistique de la nature, capturant la lumière et la couleur. d'une beauté envoûtante."
+
+#: .\templates\home.html:486
+msgid "Discover a diverse range of high-quality products for every need."
+msgstr "Découvrez une gamme diversifiée de produits de haute qualité pour chaque besoin."
+
+#: .\templates\home.html:491
+msgid "Find unbeatable offers on top-rated products, exclusively for you."
+msgstr "Trouvez des offres imbattables sur les produits les mieux notés, exclusivement pour vous."
+
+#: .\templates\home.html:498
+msgid ""
+"Purely sourced, authentically crafted, delivering nature's goodness at its "
+"finest."
+msgstr "Source pure, fabrication authentique, offrant les bienfaits de la nature à son le meilleur."
+
+#: .\templates\home.html:503
+msgid ""
+"Effortless maintenance ensures lasting cleanliness for added convenience and "
+"peace of mind"
+msgstr "Un entretien sans effort garantit une propreté durable pour plus de commodité et tranquillité d'esprit"
+
+#: .\templates\home.html:508
+msgid ""
+"Tailored shipping options to suit your needs, ensuring convenience and "
+"flexibility."
+msgstr "Des options d'expédition sur mesure adaptées à vos besoins, garantissant commodité et la flexibilité."
+
+#: .\templates\home.html:513
+msgid "Protecting your purchase with a seamless and secure payment process."
+msgstr "Protégez votre achat avec un processus de paiement transparent et sécurisé."

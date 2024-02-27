@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container form_box" style="max-width: 400px;">
+    <h1 class="form-title">Login</h1>
+    <form method="post" action="{% url 'login' %}" class="login-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="uname">Email</label>
+            <input type="text" class="form-control" id="uname" name="email" value="{{ entered_email }}" required placeholder="Enter email">
+        </div>
+        <div class="form-group">
+            <label for="passw">Password</label>
+            <input type="password"  class="form-control" id="passw" placeholder="Enter password" required name="passw">
+            <a href="{% url 'reset_password' %}" class="forgot-password-link">Forgot your password?</a>
+        </div>
+        <button type="submit" class="btn btn-dark">Login</button><p>Haven't signed up yet? <a href="{% url 'register' %}" class="register-link">Register</a></p>
+    </form>
+</div>
+<style>
+    .form_box {
+        margin-top: 40px;
+        margin-bottom: 40px;
+        box-shadow: 0px 0px 5px rgb(141, 141, 141);
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #fff;
+    }
+
+    .form-title {
+        display: flex;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    .login-form {
+        display: grid;
+        gap: 15px;
+    }
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+    label {
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+</style>
+
+{% endblock content %}
+

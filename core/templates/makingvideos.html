@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mb-5">
+    <h1 class="text-center mt-3" style="font-weight: bold;">Discover the Artistry Behind Our Craftsmanship</h1>
+    <p class="text-center p-3">Step into the world of artisanal excellence as we unveil the intricate process behind crafting
+        our exquisite products. Immerse yourself in the mastery of our skilled artisans as they breathe
+        life into raw materials, transforming them into timeless pieces of elegance and beauty. Through
+        our exclusive behind-the-scenes videos, witness the dedication, precision, and passion that go
+        into every creation, ensuring unparalleled quality and craftsmanship in each product. Join us
+        on a journey of discovery as we unveil the artistry behind our craft, inviting you to 
+        experience the magic of our making firsthand.</p>
+
+    <div class="mt-4 row">
+        <div class="col-md-4 text-center">
+           <video controls>
+              <source src="{% static 'videos/vid3.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+            </video> 
+        </div>
+        <div class="col-md-4 text-center">
+           <video controls>
+              <source src="{% static 'videos/vid2.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+            </video> 
+        </div>
+        <div class="col-md-4 text-center">
+           <video controls>
+              <source src="{% static 'videos/vid4.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+            </video> 
+        </div>
+     </div>
+     <div class="mt-5 row">
+        <div class="col-md-4 text-center">
+           <video width="350" height="640" controls>
+              <source src="{% static 'videos/vid1.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+            </video> 
+        </div>
+        <div class="col-md-4 text-center">
+           <video controls>
+              <source src="{% static 'videos/vid5.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+            </video> 
+        </div>
+        <div class="col-md-4 text-center">
+           <video controls>
+              <source src="{% static 'videos/vid6.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+            </video> 
+        </div>
+     </div>
+     <div class="mt-5 row">
+        <div class="col-md-4 text-center">
+           <video width="350" height="600" controls>
+              <source src="{% static 'videos/vid7.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+            </video> 
+        </div>
+        <div class="col-md-4 text-center">
+           <video width="350" height="600" controls>
+              <source src="{% static 'videos/vid8.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+            </video> 
+        </div>
+        <div class="col-md-4 text-center">
+           <video width="350" height="600" controls>
+              <source src="{% static 'videos/vid9.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+            </video> 
+        </div>
+        <div class="col-md-4 text-center">
+           <video width="350" height="600" controls>
+              <source src="{% static 'videos/vid23.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+            </video> 
+        </div>
+        <div class="col-md-4 text-center">
+           <video width="350" height="600" controls>
+              <source src="{% static 'videos/vid67.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+            </video> 
+        </div>
+     </div>
+     <div class="mt-5 row">
+         {% for vid in videos %}
+         <div class="col-md-4 text-center">
+            <video width="350" height="600" controls>
+               <source src="{{ vid.video.path }}" type="video/mp4">
+             Your browser does not support the video tag.
+             </video> 
+         </div>
+         {% endfor %}
+     </div>
+</div>
+
+
+{% endblock content %}

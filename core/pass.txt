@@ -1,0 +1,9 @@
+IP Address: 172.245.240.117
+Username: root
+root pass 3gr48Ax2MNG26noIeF
+
+video watched for deployment: https://www.youtube.com/watch?v=ZpR1W-NWnp4&t=1955s
+video watched for certbot: https://www.youtube.com/watch?v=dYdv6pkCufk
+
+
+

@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+   .sticker-label {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #fff;
+      border-radius: 5px;
+   }
+   .sold-out {
+      background-color: red;
+   }
+   .checked {
+      color: orange;
+   }   
+   .filter_links {
+      cursor: pointer;
+      padding-top: 5px;
+   }
+
+   .category_text {
+      padding: 0;
+      margin: 0;
+   }
+
+   .image_1 {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      padding-top: 5px;
+   }
+
+   .item_link_text {
+      margin-top: 5px;
+      text-align: center;
+      margin-left: 10px;
+      margin-right: 10px;
+   }
+   .product_box {
+      box-shadow: 0px 0px 5px grey;
+      margin: 5px;
+      min-height: 330px;
+      height: auto;
+   }
+   .product_box {
+      box-shadow: 0px 0px 10px grey;
+      transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add transition for smooth effect */
+   }
+
+   .product_box:hover {
+      transform: translateY(-10px); /* Move the element up slightly */
+      box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2); /* Add a larger shadow to create a popping effect */
+   }
+   #more {
+      display: none;
+   }
+   .product_container {
+      padding: 13px;
+      background-color: white;
+      margin: auto;
+      box-shadow: 0px 0px 5px rgb(212, 212, 212);
+      margin-bottom: 20px;
+   }
+   a#readMoreBtn {
+      color: black;
+      cursor: pointer;
+      transition: color 0.3s ease; 
+   }
+   a#readMoreBtn:hover {
+    color: rgb(255, 175, 83); 
+   }
+</style>
+
+<div class="product_section layout_padding">
+   <div class="container-fluid" style="margin-right: 20px;">
+      <div class="row">
+         <h1 style="font-size: 40px;"  class="text-center mt-5 mb-2">All Products</h1>
+      
+      </div>
+      <div class="row">
+         <div class="col-md-2 col-sm-4 mobile_off_canvas_sidebar">
+            <div class="product_container">
+               <h2>Filter Section</h2>
+               <hr>
+               <ul>
+                  <h3 >Products</h3>
+                  <li class="filter_links"><i class="fa fa-circle" style="font-size: 10px;"></i>  <a href="{% url 'all_products' %}">All Products</a></li>
+                  {% for product_type in product_types %}
+                  <li class="filter_links"> <i class="fa fa-circle" style="font-size: 10px;"></i>  <a href="?pid={{ product_type.id }}">{{ product_type }}</a></li>
+                  {% endfor %}
+               </ul>
+
+            </div>
+            <div class="product_container">
+               <ul>
+                  <h3 >Categories</h3>
+                  {% for category in all_categories %}
+                  <li class="filter_links"><i class="fa fa-circle" style="font-size: 10px;"></i>  <a href="{% url 'products' category.category_slug %}">{{ category.category_name }}</a></li>
+                  {% endfor %}
+               </ul>
+            </div>
+            <div class="product_container">
+               <ul>
+                  <h3>sort by price</h3>
+                  {% for price_range in prices_filters %}
+                  <li class="filter_links"><i class="fa fa-circle" style="font-size: 10px;"></i>  <a onclick="updateUrlParams([{'prmin': '{{ price_range.0 }}'}, {'prmax': '{{ price_range.1 }}'} ])">from {{ price_range.0 }}$ to {{ price_range.1 }}$</a></li>
+                  {% endfor %}
+               </ul>
+            </div>
+         </div>
+
+         <div class="col-md-9 col-sm-8">
+            <div class="product_container">
+               <div class="row">
+                  <div class="col-12 mb-3 text-right">
+                     <div class="dropdown" style="margin-left: 0; float: right;">
+                        <p class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">Sort By:</p>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <li><a onclick="updateUrlParams([{'sort': 'bs'}])">Best Selling</a></li>
+                              <li><a onclick="updateUrlParams([{'sort': 'plh'}])">Price, low to high</a></li>
+                              <li><a onclick="updateUrlParams([{'sort': 'phl'}])">Price, high to low</a></li>
+                              <li><a onclick="updateUrlParams([{'sort': 'dno'}])">Date, new to old</a></li>
+                              <li><a onclick="updateUrlParams([{'sort': 'don'}])">Date, old to new</a></li>
+                        </ul>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row">
+                     {% for item in all_items %}
+                        <div class="col-lg-3 col-sm-6 product_item mb-4">
+                           <div class="product_box" style="display: flex; flex-direction: column; position: relative;">
+                              {% if item.quantity == 0 %}
+                                 <div class="sticker-label sold-out">Sold Out</div>
+                              {% endif %}
+                              <a href="{% url 'item_detail' item.sku %}">
+                                 {% if item.main_image %}
+                                 <img src="{{ item.main_image.url }}" class="image_1">
+                                 {% else %}
+                                 <img alt="Image Not Uploaded yet" class="image_1">
+                                 {% endif %} 
+                              </a>
+                              <h4 class="item_link_text"><a href="{% url 'item_detail' item.sku %}">{{ item.item_name|truncatechars:45 }}</a></h4>
+                              
+                              <div style="display: flex; align-items: center; margin-top: auto;">
+                                 <div class="stars" id="{{ item.item_name }}" style="display: inline-block; margin-left: 5px;">
+                                       {{ item.get_star_code|safe }}
+                                 </div>
+                                 <p style="margin-left: 5px; margin-bottom: 5px; font-weight: 500;">
+                                       ({{ item.get_average_rating|default:0 }}){{ item.review_set.count }}
+                                 </p>
+                                 <p style="margin-bottom: 5px; margin-left: auto; margin-right: 5px; font-size: 15px;">{{ item.default_price }}$</p>
+                              </div>
+                           </div>
+                     </div>
+                     {% endfor %}        
+               </div>
+            </div>
+
+         </div>
+      </div>
+
+   </div>
+</div>
+
+<script>
+   function updateUrlParams(paramList) {
+      var currentUrl = window.location.href;
+
+      var url = new URL(currentUrl);
+      paramList.forEach(function(param) {
+         var paramName = Object.keys(param)[0];
+         var paramValue = param[paramName];
+         if (url.searchParams.has(paramName)) {
+            url.searchParams.set(paramName, paramValue);
+         } else {
+            url.searchParams.append(paramName, paramValue);
+         }
+   });
+
+   // Redirect to the updated URL
+   window.location.href = url.href;
+   }
+
+   function readMore() {
+      var original = document.getElementById("original");
+      var dots = document.getElementById("dots");
+      var moreText = document.getElementById("more");
+      var btnText = document.getElementById("readMoreBtn");
+      if (dots.style.display === "none") {
+         dots.style.display = "inline";
+         btnText.innerHTML = "Read more";
+         moreText.style.display = "none";
+         original.style.display = 'inline';
+
+      } else {
+         dots.style.display = "none";
+         btnText.innerHTML = "Read less";
+         moreText.style.display = "inline";
+         original.style.display = 'none';
+      }
+   }
+</script>
+
+{% endblock content %}

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="navigation">
+        <a class="nav-item">Shopping cart</a>
+        <div class="arrow">&rarr;</div>
+        <a class="nav-item">Checkout</a>
+        <div class="arrow">&rarr;</div>
+        <a class="nav-item bold">Select Shipment</a>
+        <div class="arrow">&rarr;</div>
+        <a class="nav-item">Order complete</a>
+      </div>
+    
+    <div class="card d-flex mb-3" style="background-color: #ffffff; padding: 10px;">
+        <h2 class="text-right">Total Amount</h2>
+        <p id="totalAmount" class="text-right" style="font-weight: bold; font-size: 20px;">${{ total_amount }}</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div style="background-color: #ffffff; padding: 30px;">
+                <h2>Shipping Options</h2>
+                <form>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="">Select a Shipping rate</label>
+                        <select class="form-select form-control" id="shipping_rate" name="shippingOption" required>
+                            {% for rate in rates %}
+                                <option value="{{ rate.object_id }}" {% if forloop.counter == 1 %}selected{% endif %} data-amount="{{ rate.amount_local }}">{{ rate.provider }} - ${{ rate.amount_local }} ({{ rate.estimated_days }} days)</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div style="background-color: #ffffff; padding: 30px;">
+                <h2>Cart Items</h2>
+                <ul class="list-group">
+                    {% for item in cart_items %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <img src="{{ item.item_image_link }}" alt="{{ item.item_name }}" style="width: 50px; height: 50px;" class="mr-3">
+                                    {{ item.item_name }} - {{ item.quantity }} x ${{ item.item_price }}
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="text-right">
+        <a class="btn btn-dark mt-2" style="width: 200px; color: white;" id="PayNow">Pay Now</a>
+    </div>
+</div>
+
+<script>
+    var raw_amnt = "{{ initial_cart_amount }}" 
+    document.addEventListener('DOMContentLoaded', function () {
+        const totalAmountElement = document.getElementById('totalAmount');
+        const shippingRateSelect = document.getElementById('shipping_rate');
+
+        shippingRateSelect.addEventListener('change', function () {
+            const selectedOption = shippingRateSelect.value;
+
+            if (selectedOption === "") {
+                totalAmountElement.textContent = '$' + parseFloat(totalAmountElement.textContent.replace('$', '')).toFixed(2);
+            } else {
+                const selectedAmount = parseFloat(shippingRateSelect.options[shippingRateSelect.selectedIndex].dataset.amount);
+                const newTotalAmount = parseInt(raw_amnt) + 1 + selectedAmount;
+                totalAmountElement.textContent = '$' + newTotalAmount.toFixed(2);
+            }
+        });
+    });
+
+    fetch("/config/").then((result) => result.json()).then((data) => {
+        const stripe = Stripe(data.publicKey);
+        const shippingRateSelect = document.getElementById('shipping_rate');
+        document.querySelector("#PayNow").addEventListener("click", () => {
+        const selectedShippingRate = shippingRateSelect.value;
+        const postData = {
+                shippingRate: selectedShippingRate,
+            };
+        fetch("{% url 'billing' %}", {method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(postData),
+        })
+        .then((result) => result.json())
+        .then((data) => {
+            console.log(data);
+            return stripe.redirectToCheckout({ sessionId: data.sessionId });
+        })
+        .then((res) => {
+            console.log(res);
+        });
+    });
+    })
+
+    
+</script>
+
+{% endblock content %}

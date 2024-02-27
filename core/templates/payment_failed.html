@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-5" style="margin-bottom: 50px; height: 600px;">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 text-center payment-failed-container">
+            <h1 class="display-4 payment-failed-text">Payment Failed</h1>
+            <p class="lead payment-failed-text">We're sorry, but it seems there was an issue with your payment. Please try again.</p>
+
+            <div class="mt-4 payment-failed-links">
+                <a href="{% url 'home' %}" class="btn btn-dark">Go to Home</a>
+                <a href="{% url 'all_products' %}" class="btn btn-dark">View All Products</a>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    /* Custom CSS for the payment failed page */
+    .payment-failed-container {
+        background-color: #f8d7da; /* Light red background color */
+        margin: 20px auto; /* Center the container horizontally with auto margin */
+        padding: 20px; /* Padding inside the container */
+        border-radius: 10px; /* Rounded corners for a softer look */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow for a subtle lift effect */
+    }
+
+    /* Additional styling for text and links */
+    .payment-failed-text {
+        font-size: 1.5em;
+        color: #721c24; /* Dark red text color */
+    }
+
+    .payment-failed-links {
+        margin-top: 15px;
+    }
+
+    .payment-failed-links a {
+        margin-right: 15px;
+        color: white
+    }
+</style>
+{% endblock content %}

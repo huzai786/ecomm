@@ -1,0 +1,404 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .checked {
+        color: orange;
+    }
+
+    .links_prev_next {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .card-wrapper {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .img-display {
+        overflow: hidden;
+    }
+
+    .img-showcase {
+        display: flex;
+        width: 100%;
+        max-height: 600px;
+        transition: all .5s ease;
+    }
+
+    .img-showcase img {
+        min-width: 100%;
+        min-height: 100%;
+        object-fit: cover;
+    }
+
+    .img-select {
+        display: flex;
+        flex-wrap: wrap; 
+    } 
+    .img-item {
+        margin: 0.25rem;
+    }
+
+    .img-item img {
+        width: 125px; 
+        height: 125px;
+        object-fit: cover; 
+    }
+
+    .img-item:hover {
+        opacity: 0.8;
+    }
+
+    .product-content {
+        padding: 2rem 1rem;
+    }
+
+    .product-title {
+        font-size: 2rem;
+        text-transform: capitalize;
+        font-weight: 700;
+        position: relative;
+        color: #12263a;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .product-title::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 60%;
+        height: 4px;
+        background-color: #ffbd5b;
+    }
+
+    .product-link:hover {
+        opacity: 0.9;
+    }
+
+    .product-price p {
+        margin: 7px 0;
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .new-price span {
+        color: #256eff;
+    }
+
+    .product-detail h2 {
+        text-transform: capitalize;
+        color: #12263a;
+        padding-bottom: 0.6rem;
+    }
+
+    .product-detail p {
+        font-size: 0.9rem;
+        padding: 0.3rem;
+        opacity: 0.8;
+    }
+
+    .product-detail ul {
+        margin: 1rem 0;
+        font-size: 0.9rem;
+    }
+
+    .purchase-info input,
+    .purchase-info .btn {
+        border: 1.5px solid #ddd;
+        border-radius: 25px;
+        text-align: center;
+        padding: 0.45rem 0.8rem;
+        outline: 0;
+        margin-right: 0.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .purchase-info input {
+        width: 60px;
+    }
+
+    .purchase-info .btn {
+        cursor: pointer;
+        color: #ffffff;
+    }
+
+    .purchase-info .btn:last-of-type {
+        background: #ff9e1e;
+    }
+
+    .purchase-info .btn:hover {
+        opacity: 0.9;
+    }
+
+    .social-links {
+        display: flex;
+        align-items: center;
+    }
+
+    .social-links a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        color: #000;
+        border: 1px solid #000;
+        margin: 0 0.2rem;
+        border-radius: 50%;
+        text-decoration: none;
+        font-size: 0.8rem;
+        transition: all 0.5s ease;
+    }
+
+    .social-links a:hover {
+        background: #000;
+        border-color: transparent;
+        color: #fff;
+    }
+
+    @media screen and (min-width: 992px) {
+        .card {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 1.5rem;
+        }
+
+        .card-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .product-imgs {
+            display: flex;
+            flex-direction: column;
+            margin-left: 5px;
+            margin-top: 5px;
+        }
+
+        .product-content {
+            padding-top: 0;
+        }
+    }
+</style>
+<div class="links_prev_next">
+    <div class="mt-3 text-right">
+    <a href="{% url 'item_detail' previous_item.sku %}"><< Previous Item</a> |
+    <a href="{% url 'item_detail' next_item.sku %}">Next Item >></a>
+</div>
+</div>
+<div class="card-wrapper" style="margin-top: 10px; margin-bottom: 30px;">
+    <div class="card">
+        <!-- card left -->
+        <div class="product-imgs">
+            <div class="img-display">
+                <div class="img-showcase">
+                    {% for image in item.image_set.all %}
+                        <img src="{{ image.image.url }}" alt="image">
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="img-select">
+                {% for image in item.image_set.all %}
+                    <div class="img-item">
+                        <a data-id='{{ forloop.counter }}'>
+                            <img class="item-image" src="{{ image.image.url }}">
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- card right -->
+        <div class="product-content">
+            <h3 class="product-title">{{ item.item_name }}</h3>
+            <div>
+                <div class="stars" id="{{ item.item_name }}" style="display: inline-block;">
+                    {{ item.get_star_code|safe }}
+                </div>
+                {% if total_reviews %}
+                    <span>{{ average_rating }}({{ total_reviews }})</span>
+                {% else %}
+                    <span>0(0)</span>
+                {% endif %}
+            </div>
+            <div class="product-price">
+                <p>Price: <span id="regular_price">{{ item_price }}$</span></p>
+                {% if item.quantity > 0 %}
+                    <p style="color: green; font-weight: 700;">In Stock</p>
+                {% else %}
+                    <p style="color: red; font-weight: 700;">Out of Stock</p>
+                {% endif %}
+            </div>
+            <div class="product-detail">
+                <h2>about this item: </h2>
+                {{ item.description|safe }}
+                {% if item.item_specification %}
+                    {{ item.item_specification|safe }}
+                {% endif %}
+            </div>
+            <div>
+                <div>
+                    <p style="font-size: 13px; margin-top: 40px;">sku: {{ item.sku }}</p>
+                </div>
+                <form method="get">
+                    <div class="product-attributes d-flex align-items-center">
+                        {% if attribute_list %}
+                            <h4>{{ item.attribute_list_name }}:</h4>
+                            <select name="selected_attribute" id="selected_attribute" onchange="this.form.submit()" class="form-control w-50 m-3">
+                                {% for attr in attribute_list %}
+                                    <option value="{{ attr.id }}" {% if attr.id == pre_selected %}selected{% endif %}>{{ attr.value }}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                    </div>
+                </form>
+                <div class="purchase-info">
+                    <form action="{% url 'cart' %}" method="post">
+                    {% csrf_token %}
+                    <a style="cursor: pointer;"><img src="{% static 'images/plus.svg' %}" alt=""></a>
+                    <input type="text" value="1" name="quantity" class="item_count">
+                    <input type="hidden" value="{{ item.sku }}" name="item_sku">
+                    {% if pre_selected != 0 %}
+                        <input type="hidden" value="{{ pre_selected }}" name="price_id">
+                    {% endif %}
+
+                    <a style="cursor: pointer;"><img src="{% static 'images/minus.svg' %}" alt=""></a>
+                    {% if item.quantity > 0 %}
+                        <button type="submit" class="btn" style="float: right;">Add to Cart <img src="{% static 'images/site_images/cart.svg' %}"/></button>
+                    {% else %}
+                        <button type="button" class="btn" disabled style="float: right;">Sold Out<img src="{% static 'images/cart-shopping-solid.svg' %}"/></button>
+                    {% endif %}
+                    </form>
+                </div>
+                <div class="social-links">
+                    <p>Share At: </p>
+                    <a target="_blank" href="//www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">
+                        <i class="fab fa-facebook-f"></i>
+                    <a target="_blank" href="//twitter.com/intent/tweet?url={{ request.build_absolute_uri }}">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a target="_blank" href="http://pinterest.com/pin/create/button/?url={{ request.build_absolute_uri }}&description={{ item.item_name }}">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container" style="background-color: white; height: auto;">
+    <div class="row d-flex align-items-center justify-content-between">
+        <h1 style="font-size: 35px;" class="m-2">Customer Reviews</h1>
+    </div>
+    <div class="row d-flex align-items-center justify-content-between">
+
+        {% if total_reviews %}
+            <div class="stars" id="{{ item.item_name }}" style="display: inline-block;">
+                <span class="ml-2">Based on {{ total_reviews }} review{% if total_reviews != 1 %}s{% endif %}</span>
+                {{ item.get_star_code|safe }}
+            </div>
+            
+        {% else %}
+            <p class="ml-2">No reviews yet</p>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+        <button id="writeReviewBtn" class="btn btn-dark mb-4 m-25" style="max-width: 300px;">Write a review</button>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn btn-dark mb-4 m-2" style="max-width: 300px;">Login to Write a review</a>
+        {% endif %}
+    </div>
+    <div id="writeReviewForm" style="display: none;">
+        <form class="mt-3" method="post" action="{% url 'create_review' item.sku %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="rating">Rating:</label>
+                <select class="form-control w-25" id="rating" name="rating">
+                    <option value="1">1 Star</option>
+                    <option value="2">2 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="5">5 Stars</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="reviewComment">Review Comment:</label>
+                <textarea class="form-control" id="reviewComment" name="reviewComment" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-dark">Send Review</button>
+            <button type="button" class="btn btn-dark" id="closeReviewBtn">Close</button>
+        </form>
+    </div>
+    {% if all_reviews %}
+        <div class="row">
+            {% for review in all_reviews %}
+                <div class="col-md-12 mt-2" style="background-color: white ;box-shadow: 0px 0px 4px grey; padding: 15px; border-radius: 20px;">
+                    <div class="d-flex align-items-center">
+                        {% if review.user.first_name %}
+                            <h4 class="mr-3">{{ review.user.first_name }} {{ review.user.last_name }}</h4>
+                        {% else %}
+                            <h4 class="mr-3">Unknown</h4>
+                        {% endif %}
+                        <div class="stars mr-2" id="{{ review.item.item_name }}">
+                            {{ review.item.get_star_code|safe }}
+                        </div>
+                        <span class="ml-auto">{{ review.upload_date }}</span>
+                    </div>
+                    <p>{{ review.review_comment }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="row mb-5"></div>
+</div>
+
+<script>
+
+    document.getElementById('closeReviewBtn').addEventListener('click', function () {
+        document.getElementById('writeReviewForm').style.display = 'none';
+    });
+
+    // image slider thingy
+    const imgs = document.querySelectorAll('.img-select a');
+    const imgBtns = [...imgs];
+    let imgId = null;
+    imgBtns.forEach((imgItem) => {
+        imgItem.addEventListener('click', (event) => {
+            event.preventDefault();
+            imgId = imgItem.dataset.id;
+            slideImage();
+        });
+    });
+
+    function slideImage() {
+        const displayWidth = document.querySelector('.img-showcase img:first-child').clientWidth;
+        document.querySelector('.img-showcase').style.transform = `translateX(${- (imgId - 1) * displayWidth}px)`;
+    }
+
+    window.addEventListener('resize', slideImage);
+
+    const wrb = document.getElementById('writeReviewBtn');
+    if (wrb) {
+        wrb.addEventListener('click', function () {
+        document.getElementById('writeReviewForm').style.display = 'block';
+    });
+    }
+
+    function increaseItemCount() {
+        let itemInput = document.querySelector(".item_count");
+        itemInput.value = parseInt(itemInput.value) + 1;
+    }
+
+    function decreaseItemCount() {
+        let itemInput = document.querySelector(".item_count");
+        if (parseInt(itemInput.value) > 1) {
+            itemInput.value = parseInt(itemInput.value) - 1;
+        }
+    }
+    
+</script>
+
+{% endblock content %}

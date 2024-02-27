@@ -1,0 +1,142 @@
+<!-- admin_orders.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2 class="text-center mt-5">This Page is only visible to Admin</h2>
+{% if orders %}
+    {% for order in orders %}
+        <div class="container mt-5 order-container">
+            <div class="row order-details">
+                <div class="col-md-6">
+                    <h2>Client Details</h2>
+                    <p style="margin-bottom:5px;">Date: {{ order.date_created }}</p>
+                    <table class="table">
+                        <tr>
+                            <th>Contact Name</th>
+                            <td>{{ order.contact_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td>{{ order.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Tracking Url</th>
+                            <td><a target="_blank" href="{{ order.tracking_url_provider }}">Tracking Url</a></td>
+                        </tr>
+                        <tr>
+                            <th>Label Url</th>
+                            <td>
+                                <a href="#" onclick="printLabel('{{ order.label_url }}'); return false;">Label Url (click to print)</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Country</th>
+                            <td>{{ order.user.userdetails.country }}</td>
+                        </tr>
+                        <tr>
+                            <th>City</th>
+                            <td>{{ order.user.userdetails.city }}</td>
+                        </tr>
+                        <tr>
+                            <th>State</th>
+                            <td>{{ order.user.userdetails.state }}</td>
+                        </tr>
+                        <tr>
+                            <th>Address 1</th>
+                            <td>{{ order.user.userdetails.addr_line1 }}</td>
+                        </tr>
+                        <tr>
+                            <th>Address 2</th>
+                            <td>{{ order.user.userdetails.addr_line2 }}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-6" style="margin-top: 62px;">
+                    <table class="table">
+                        <tr>
+                            <th>Postal Code</th>
+                            <td>{{ order.user.userdetails.postal_code }}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone number</th>
+                            <td>{{ order.user.userdetails.phone }}</td>
+                        </tr>
+                        <tr>
+                            <th>Total Amount</th>
+                            <td>{{ order.total_amount }}$</td>
+                        </tr>
+                        <tr>
+                            <th>Shipping Fee</th>
+                            <td>{{ order.shipping_fee }}$</td>
+                        </tr>
+                        <tr>
+                            <th>Payment Status</th>
+                            <td>{{ order.payment_status }}</td>
+                        </tr>
+                        <tr>
+                            <th>Order Status</th>
+                            <td>{{ order.status }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="container item-details">
+                <h2>Order Items</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Item Total Price</th>
+                            <th>Item Variant</th>
+                            <th>Item Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order_item in order.order_items.all %}
+                            <tr>
+                                <td>{{ order_item.item_name }}</td>
+                                <td>${{ order_item.item_price }}</td>
+                                <td>{{ order_item.variant }}</td>
+                                <td>{{ order_item.item_quantity }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="container mt-5">
+        <p class="bold text-center">No orders yet</p>
+    </div>
+{% endif %}
+
+<div style="height: 600px;"></div>
+<style>
+    .order-container {
+        background-color: #f8f9fa;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .order-details {
+        margin-bottom: 20px;
+    }
+
+    .item-details {
+        margin-top: 10px;
+    }
+</style>
+<script>
+    function printLabel(labelUrl) {
+        var printWindow = window.open(labelUrl, '_blank');
+        printWindow.onload = function () {
+            printWindow.print();
+        };
+    }
+
+</script>
+{% endblock content %}

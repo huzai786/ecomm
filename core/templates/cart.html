@@ -1,0 +1,308 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container" style="margin-top: 20px;  margin-bottom: 300px;">
+    <div class="navigation">
+        <a class="nav-item bold">Shopping cart</a>
+        <div class="arrow">&rarr;</div>
+        <a class="nav-item">Checkout</a>
+        <div class="arrow">&rarr;</div>
+        <a class="nav-item">Select Shipment</a>
+        <div class="arrow">&rarr;</div>
+        <a class="nav-item">Order complete</a>
+      </div>
+    <div class="wrapper wrapper-content animated">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <span>(<strong>{{ total_items }}</strong>) item(s) in your cart.</span>       
+                    </div>
+                    {% if cart_items %}
+                        {% for cart_item in cart_items %}
+                            <div class="ibox-content">
+                                <div class="table-responsive">
+                                    <table class="table shoping-cart-table">
+                                        <tbody>
+                                        <tr>
+                                            <td width="90">
+                                                <div class="cart-product-imitation">
+                                                    <a href="{% url 'item_detail' cart_item.item_sku %}"><img src="{{ cart_item.item_image_link }}" alt=""></a>
+                                                </div>
+                                            </td>
+                                            <td class="desc">
+                                                <h3>
+                                                <a href="{% url 'item_detail' cart_item.item_sku %}" class="text-black">
+                                                    {{ cart_item.item_name }}
+                                                </a>
+                                                </h3>
+                                                <p class="small">
+                                                    <a href="{% url 'item_detail' cart_item.item_sku %}" style="text-decoration: none;">{{ cart_item.item_description|truncatechars:150|safe }}</a>
+                                                </p>
+                                                {% if cart_item.variant %}
+                                                  <p>{{ cart_item.variant }}</p>
+                                                {% endif %}
+
+                                                <div class="m-t-sm">
+                                                    <a href="{% url 'delete_cart_item' cart_item.id %}" class="text-muted"><i class="fa fa-trash"></i> Remove item</a>
+                                                </div>
+                                            </td>
+                                            <td width="65">
+                                                {{ cart_item.quantity }}
+                                            </td>
+                                            <td>
+                                                <h4>
+                                                    {{ cart_item.calculate_total_price }}$
+                                                </h4>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="ibox-content">
+                            <p>there are no items in your cart <a href="{% url 'all_products' %}">Shop Now</a></p>
+                        </div>
+                    {% endif %}
+
+                    <div class="ibox-content">
+                        <div class="row ">
+                            <div class="col-md-6"></div>
+                            <div class="col-md-6">
+                                <div style="float: right;">
+                                    <input id="checkbox" type="checkbox" />
+                                    <label for="checkbox"> I agree to these <a href="{% url 'return_policy' %}" target="_blank">Terms and Conditions</a>.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-1" style="width: auto;">
+                            <div class="d-flex flex-row justify-content-between">
+                                <div>
+                                    <a class="btn btn-dark cart_item_link" href="{% url 'all_products' %}"><i class="fa fa-arrow-left"></i> Continue shopping</a>
+                                </div>
+                                <div>
+                                    <a href="{% url 'checkout' %}" class="btn btn-dark cart_item_link" id="CheckOutBtn"><i class="fa fa fa-shopping-cart"></i> Check Out</a>
+                                </div>
+
+                            </div>
+                        </div>
+            
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Cart Summary</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <span>
+                            Total
+                        </span>
+                        <h2 class="font-bold">
+                            {{ total_amount }}$
+                        </h2>
+
+                        <hr>
+                        <span class="text-muted small">
+                            *For United States taxes are included in the price.
+                        </span>
+                    </div>
+                </div>
+
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Support</h5>
+                    </div>
+                    <div class="ibox-content text-center">
+                        <h3><i class="fa fa-phone"></i>{{ watsapp_cart }}</h3>
+                        <span class="small">
+                            Please contact with us if you have any questions. We are avalible 24h.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var checkoutBtn = document.getElementById("CheckOutBtn");
+        var checkbox = document.getElementById("checkbox");
+        var label = document.querySelector('label[for="checkbox"]');
+        
+        var errorContainer = document.querySelector('.alert_container');
+
+        checkoutBtn.addEventListener("click", function (e) {
+            var cartItems = document.querySelectorAll('.shoping-cart-table tbody tr');
+            if (cartItems.length === 0) {
+                e.preventDefault();
+                var newAlertHTML = `
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        No items in the cart. Add items before checking out.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+                errorContainer.innerHTML += newAlertHTML;
+                return;
+            }
+            if (!checkbox.checked) {
+                e.preventDefault();
+                var newAlertHTML = `
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        You must agree with the terms and conditions in order to check out.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+                errorContainer.innerHTML += newAlertHTML;
+            } else {
+                var existingErrorMessage = label.nextElementSibling;
+                if (existingErrorMessage && existingErrorMessage.classList.contains('error')) {
+                    existingErrorMessage.remove();
+                }
+            }
+        });
+
+        checkbox.addEventListener("change", function () {
+            var existingErrorMessage = label.nextElementSibling;
+            if (existingErrorMessage && existingErrorMessage.classList.contains('error')) {
+                existingErrorMessage.remove();
+            }
+        });
+    });
+
+</script>
+<style>
+    .error {
+        color: red;
+    }
+    .tacbox {
+      display:block;
+      padding: 1em;
+      margin: 2em;
+    }
+    .popup-container {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #f8f8f8;
+      padding: 20px;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+    .popup-content {
+      text-align: left;
+    }
+    .close-btn {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close-btn:hover,
+    .close-btn:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    a.disabled {
+      pointer-events: none;
+      cursor: default;
+    }
+    h3 {
+        font-size: 16px;
+    }
+
+    .cart-product-imitation {
+      text-align: center;
+      padding-top: 10px;
+      height: 80px;
+      width: 80px;
+      background-color: #f8f8f9;
+    }
+    .product-imitation.xl {
+      padding: 120px 0;
+    }
+    .product-desc {
+      padding: 20px;
+      position: relative;
+    }
+    .ecommerce .tag-list {
+      padding: 0;
+    }
+    .ecommerce .fa-star {
+      color: #d1dade;
+    }
+    .ecommerce .fa-star.active {
+      color: #f8ac59;
+    }
+    .ecommerce .note-editor {
+      border: 1px solid #e7eaec;
+    }
+    table.shoping-cart-table {
+      margin-bottom: 0;
+    }
+    table.shoping-cart-table tr td {
+      border: none;
+      text-align: right;
+    }
+    table.shoping-cart-table tr td.desc,
+    table.shoping-cart-table tr td:first-child {
+      text-align: left;
+    }
+    table.shoping-cart-table tr td:last-child {
+      width: 80px;
+    }
+    .ibox {
+      clear: both;
+      margin-bottom: 25px;
+      margin-top: 0;
+      padding: 0;
+    }
+    .ibox.collapsed .ibox-content {
+      display: none;
+    }
+    .ibox:after,
+    .ibox:before {
+      display: table;
+    }
+    .ibox-title {
+      -moz-border-bottom-colors: none;
+      -moz-border-left-colors: none;
+      -moz-border-right-colors: none;
+      -moz-border-top-colors: none;
+      background-color: #ffffff;
+      border-color: #e7eaec;
+      border-image: none;
+      border-style: solid solid none;
+      border-width: 3px 0 0;
+      color: inherit;
+      margin-bottom: 0;
+      padding: 14px 15px 7px;
+      min-height: 48px;
+    }
+    .ibox-content {
+      background-color: #ffffff;
+      color: inherit;
+      padding: 15px 20px 20px 20px;
+      border-color: #e7eaec;
+      border-image: none;
+      border-style: solid solid none;
+      border-width: 1px 0;
+    }
+    .ibox-footer {
+      color: inherit;
+      border-top: 1px solid #e7eaec;
+      font-size: 90%;
+      background: #ffffff;
+      padding: 10px 15px;
+    }
+</style>
+{% endblock content %}
